@@ -18,6 +18,7 @@ namespace AssetStudio
             public uint compressedBlocksInfoSize;
             public uint uncompressedBlocksInfoSize;
             public uint flags;
+            public uint unityVer;
         }
 
         public class StorageBlock
@@ -48,6 +49,7 @@ namespace AssetStudio
             m_Header.version = reader.ReadUInt32();
             m_Header.unityVersion = reader.ReadStringToNull();
             m_Header.unityRevision = reader.ReadStringToNull();
+            m_Header.unityVer = uint.Parse(m_Header.unityRevision.Substring(0, m_Header.unityRevision.IndexOf('.')));
             switch (m_Header.signature)
             {
                 case "UnityArchive":
@@ -205,7 +207,7 @@ namespace AssetStudio
         private void ReadBlocksInfoAndDirectory(EndianBinaryReader reader)
         {
             byte[] blocksInfoBytes;
-            if (m_Header.version >= 7)
+            if (m_Header.version >= 7 && m_Header.unityVer >= 2020)
             {
                 reader.AlignStream(16);
             }
